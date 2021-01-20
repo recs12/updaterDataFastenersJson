@@ -3,8 +3,11 @@ import pandas as pd
 import json
 import os
 
+__version__ = "0.0.0"
+
 xslx = ["table.xlsx", "fasteners.xlsx"]
 print(xslx)
+
 
 def update_table(doc):
     excel = pd.read_excel(doc, sheet_name=0)
@@ -15,21 +18,33 @@ def update_table(doc):
     name = os.path.splitext(doc)[0]
     with open(name + ".json", "w") as t:
         t.write(content)
-    print("|> %s updated with changes." %doc)
+    print("|> %s updated with changes." % doc)
 
-def update_table(doc):
+
+def update_fasteners(doc):
     excel = pd.read_excel(doc, sheet_name=0)
-    pass
+    json_format_string = excel.to_json(orient="records")
+    parsed = json.loads(json_format_string)
+    content = json.dumps(parsed, indent=4)
+    name = os.path.splitext(doc)[0]
+    with open(name + ".json", "w") as t:
+        t.write(content)
+    print("|> %s updated with changes." % doc)
+
 
 def update(f):
     try:
         if os.path.exists(f) and f == "table.xlsx":
             update_table(f)
         elif os.path.exists(f) and f == "fasteners.xlsx":
-            print("update fastener is not ready")
-            # update_table(f)
+            update_fasteners(f)
+
     except FileNotFoundError as fn:
         print(fn.args)
 
-update("table.xlsx")
-update("fasteners.xlsx")
+
+if __name__ == "__main__":
+    print(__version__)
+    update("table.xlsx")
+    update("fasteners.xlsx")
+    _ = input("Press any keys to exit...")
