@@ -1,7 +1,7 @@
 
-import pandas as pd
 import json
 import os
+import pandas as pd
 
 __version__ = "0.0.0"
 
@@ -11,6 +11,7 @@ print(xslx)
 
 def update_table(doc):
     excel = pd.read_excel(doc, sheet_name=0)
+    excel = excel.applymap(str)
     reindexed = excel.set_index(excel.columns[0])
     json_format_string = reindexed.to_json(orient="index")
     parsed = json.loads(json_format_string)
@@ -23,6 +24,7 @@ def update_table(doc):
 
 def update_fasteners(doc):
     excel = pd.read_excel(doc, sheet_name=0)
+    excel = excel.applymap(str)
     json_format_string = excel.to_json(orient="records")
     parsed = json.loads(json_format_string)
     content = json.dumps(parsed, indent=4)
@@ -34,10 +36,10 @@ def update_fasteners(doc):
 
 def update(f):
     try:
-        if os.path.exists(f) and f == "table.xlsx":
-            update_table(f)
-        elif os.path.exists(f) and f == "fasteners.xlsx":
+        if os.path.exists(f) and f == "fasteners.xlsx":
             update_fasteners(f)
+        elif os.path.exists(f) and f == "table.xlsx":
+            update_table(f)
 
     except FileNotFoundError as fn:
         print(fn.args)

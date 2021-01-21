@@ -1,0 +1,1 @@
+python -m nuitka --follow-imports --windows-icon-from-ico=icon.ico update.py 
